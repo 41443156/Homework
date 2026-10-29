@@ -1,5 +1,6 @@
-#include <iostream>
+#include<iostream>
 #include<algorithm>
+#include<cmath>
 using namespace std;
 class Polynomial;
 class Term {
@@ -14,20 +15,20 @@ class Polynomial {
 		int capacity;
 		int terms;
 	public:
-		Polynomial();
+        ~Polynomial();
 		Polynomial() :capacity(2), terms(0) {
 			termArray = new Term[capacity];
 		}
-		void newTerm(const float theCoef, const int theExp);
+        void  newTerm(const float theCoef, const int theExp);
 		Polynomial Add(const Polynomial& b);
 		Polynomial Mult(const Polynomial& b);
-
+		float Eval(float x);
 };
-void Polynomial::newTerm(const float theCoef, const int theExp) {
+void  Polynomial::newTerm(const float theCoef, const int theExp) {
 	if (theCoef == 0) {
 		return;
 	}
-	if (terms = capacity) {
+	if (terms == capacity) {
 		capacity *= 2;
 		Term* temp = new Term[capacity];
 		copy(termArray, termArray + terms, temp);
@@ -64,6 +65,24 @@ Polynomial Polynomial::Add(const Polynomial& b) {
     return c;
 }
 Polynomial Polynomial::Mult(const Polynomial& b) {
-	
+    Polynomial c; 
+    for (int aPos = 0; aPos < terms; aPos++) {
+        Polynomial temp; 
+        for (int bPos = 0; bPos < b.terms; bPos++) {
+            float newCoef = termArray[aPos].coef * b.termArray[bPos].coef;
+            int newExp = termArray[aPos].exp + b.termArray[bPos].exp;
+            temp.newTerm(newCoef, newExp);
+        }
+        c = c.Add(temp);
+    }
 
+    return c;
 }
+float Polynomial::Eval(float x) {
+    float sum = 0.0; 
+    for (int i = 0; i < terms; i++) {
+        sum += termArray[i].coef * pow(x, termArray[i].exp);
+    }
+    return sum; 
+}
+
